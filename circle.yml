@@ -3,6 +3,11 @@ general:
     - ./app/build/outputs/apk/
 
 machine:
+  pre:
+    # デバッグ用に情報を出力
+    - env
+    - pwd
+    - ls
   java:
     version: oraclejdk8
   environment:
@@ -12,11 +17,19 @@ machine:
 dependencies:
   pre:
     # ライセンスへの同意
-    - echo y | android update sdk --no-ui --all --filter "tools,build-tools-25.0.2,platform-tools,android-25,extra-android-m2repository"
+    - echo y | android update sdk --no-ui --all --filter "tools,build-tools-25.0.2,platform-tools,android-25,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository"
+    - echo y | $ANDROID_HOME/tools/bin/sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
     - mkdir -p $ANDROID_HOME/licenses
     # ローカル開発環境で同意した情報を使用する
     # OSXの場合このファイルは`~/Library/Android/sdk/licenses/android-sdk-license`
     - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > ${ANDROID_HOME}/licenses/android-sdk-license
+
+  cache_directories:
+    - /usr/local/android-sdk-linux/tools
+    - /usr/local/android-sdk-linux/platforms/android-25
+    - /usr/local/android-sdk-linux/platforms/android-23
+    - /usr/local/android-sdk-linux/platforms/android-16
+    - /usr/local/android-sdk-linux/build-tools/25.0.2
 
   override:
       - ./gradlew dependencies || true
