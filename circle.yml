@@ -1,6 +1,7 @@
 general:
   artifacts:
     - ./app/build/outputs/apk/
+
 machine:
   java:
     version: oraclejdk8
@@ -23,13 +24,19 @@ dependencies:
 test:
   override:
     - echo "Nothing to do here"
-  post:
-    - ./gradlew compileDevelopReleaseSources
-deployment:
-  upload:
-    branch: [master]
-    commands:
-      - ./gradlew assembleDevelopRelease
-      - ./gradlew uploadDeployGateDevelop
-      - ./gradlew assembleProductRelease
-      - ./gradlew uploadDeployGateProduct
+#  post:
+#    - ./gradlew compileDevelopReleaseSources
+
+compile:
+  override:
+    - ./gradlew assembleDebug
+    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
+
+#deployment:
+#  upload:
+#    branch: [master]
+#    commands:
+#      - ./gradlew assembleDevelopRelease
+#      - ./gradlew uploadDeployGateDevelop
+#      - ./gradlew assembleProductRelease
+#      - ./gradlew uploadDeployGateProduct
